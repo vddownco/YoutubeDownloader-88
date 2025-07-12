@@ -1,0 +1,50 @@
+{
+  "name": "electron-youtube-downloader",
+  "version": "1.0.0",
+  "description": "YouTube video downloader in pure javascript.",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "dependencies": {
+    "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "asar": false,
+    "appId": "com.yourname.fairycoreyt",
+    "productName": "Fairycore YouTube Downloader",
+    "files": [
+      "**/*",
+      "yt-dlp",
+      "yt-dlp.exe"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "mac": {
+      "category": "public.app-category.video",
+      "target": "dmg",
+      "icon": "assets/my_icon.png"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/my_icon.png"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "assets/my_icon.png"
+    }
+  }
+}
