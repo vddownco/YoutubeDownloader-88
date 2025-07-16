@@ -1,4 +1,3 @@
-
 process.env.PATH = [
   "/opt/homebrew/bin",
   "/usr/local/bin",
@@ -10,8 +9,6 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
-const { clear } = require("console");
-
 function findYtDlp() {
   const local = path.join(
     __dirname,
@@ -70,14 +67,24 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
+function isValidYouTubeUrl(url) {
+  return /^(https?:\/\/)?(www\.)?youtube\.com\/(watch\?v=|shorts\/)[\w-]+/.test(
+    url
+  );
+}
+
 ipcMain.on("download-video", async (event, data) => {
   const url = typeof data === "string" ? data : data.url;
-  const quality = data.quality || "bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+  const quality =
+    data.quality ||
+    "bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+
   if (!ytdlpPath) {
     event.sender.send("download-finished", "yt-dlp not found!");
     return;
   }
-  if (!/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(url)) {
+
+  if (!isValidYouTubeUrl(url)) {
     event.sender.send("download-finished", "Invalid YouTube URL");
     return;
   }
@@ -86,13 +93,16 @@ ipcMain.on("download-video", async (event, data) => {
   try {
     const ytDlpTitle = spawn(ytdlpPath, ["--get-title", url]);
     let titleOutput = "";
+
     for await (const chunk of ytDlpTitle.stdout) {
       titleOutput += chunk.toString();
     }
+
     videoTitle = titleOutput
       .trim()
       .replace(/[<>:"/\\|?*]+/g, "")
       .substring(0, 50);
+
     await new Promise((resolve) => ytDlpTitle.on("close", resolve));
   } catch {
     videoTitle = "video";
@@ -121,8 +131,7 @@ ipcMain.on("download-video", async (event, data) => {
       tempPath,
       url,
     ]);
-    
-  } catch (e) {
+  } catch {
     event.sender.send("download-finished", "yt-dlp başlatılamadı!");
     return;
   }
@@ -166,7 +175,7 @@ ipcMain.on("download-video", async (event, data) => {
           }
           if (ffcode === 0) {
             event.sender.send("download-finished", "Download completed! 🍰✨");
-            shell.showItemInFolder(savePath); // İndirilen dosyayı klasörde aç
+            shell.showItemInFolder(savePath);
           } else {
             event.sender.send("download-finished", "ffmpeg error!");
           }
@@ -179,8 +188,7 @@ ipcMain.on("download-video", async (event, data) => {
     }
   });
 
-  ytDlp.on("error", (err) => {
+  ytDlp.on("error", () => {
     event.sender.send("download-finished", "yt-dlp binary cannot be launched!");
   });
-});
-
+})
