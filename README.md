@@ -60,6 +60,9 @@ No accounts, no ads, no stress: just you, your favorite videos, and endless spar
     npm run build
     ```
     Check the `dist/` folder for .dmg (Mac) or .exe (Windows) outputs.
+  ⚠️ Note:
+Please manually place `yt-dlp.exe` and `ffmpeg.exe` in the project root before running `npm run build`.
+They are ignored from version control for size reasons.
 
 ---
 
