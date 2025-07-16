@@ -32,6 +32,12 @@ function findYtDlp() {
 const ytdlpPath = findYtDlp();
 
 function findFfmpeg() {
+  const local = path.join(
+    __dirname,
+    process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg"
+  );
+  if (fs.existsSync(local)) return local;
+
   const candidates =
     process.platform === "win32"
       ? [
@@ -45,7 +51,9 @@ function findFfmpeg() {
           "/usr/bin/ffmpeg",
           "ffmpeg",
         ];
+
   for (const p of candidates) if (fs.existsSync(p)) return p;
+
   return process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
 }
 const ffmpegPath = findFfmpeg();

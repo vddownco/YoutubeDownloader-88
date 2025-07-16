@@ -7,6 +7,11 @@
     "start": "electron .",
     "build": "electron-builder"
   },
+  "scripts": {
+  "start": "electron .",
+  "build": "electron-builder",
+  "postbuild": "node scripts/copy-binaries.js"
+  },
   "author": "",
   "license": "ISC",
   "keywords": [],
