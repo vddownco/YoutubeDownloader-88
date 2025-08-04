@@ -9,7 +9,7 @@ export default defineConfig([
     extends: ["js/recommended"],
     languageOptions: {
       sourceType: "commonjs",
-      globals: globals.node, // <<=== EKLENECEK
+      globals: globals.node, 
     },
   },
 ]);
